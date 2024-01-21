@@ -1,7 +1,3 @@
-To foster a welcoming and productive environment for all contributors, here are the contributor guidelines for your project:
-
----
-
 # Contributor Guidelines
 
 Thank you for your interest in contributing to the OSRS Profile Comparer! We welcome contributions from everyone and are grateful for any help, big or small. This document outlines the process and guidelines for contributing.
