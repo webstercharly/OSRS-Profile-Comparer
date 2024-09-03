@@ -1,8 +1,8 @@
 import re, os, json, sys
 from datetime import datetime
 
-FILE1_PLACEHOLDER = "{{FIRST}}"
-FILE2_PLACEHOLDER = "{{SECOND}}"
+FILE1_PLACEHOLDER = r"{{FIRST}}"
+FILE2_PLACEHOLDER = r"{{SECOND}}"
 
 def normalize_path(path):
     return os.path.normpath(path)
@@ -55,10 +55,10 @@ def get_relative_file_paths(folder_path):
 def get_base_filename(file_path):
     normalized_path = normalize_path(file_path)
     pattern = r'_v\d+' # pattern to find '_vXXX' in the file name
-    parts = normalized_path.split('\\')
+    parts = normalized_path.split(os.path.sep)
     if len(parts) > 1:
         parts[-1] = re.sub(pattern, '', parts[-1])
-        return '\\'.join(parts)
+        return os.path.sep.join(parts)
     return normalized_path
 
 def pair_files_for_comparison(files1, files2):
@@ -75,10 +75,14 @@ def pair_files_for_comparison(files1, files2):
             paired_files.append((file1, file2))
     return paired_files
 
-def parse_string_to_list(tasks_string):
-    tasks = tasks_string.strip("[]").split(", ")
-    tasks = [task.strip(" '\"") for task in tasks]
-    return tasks
+def parse_string_to_list(tasks):
+    if isinstance(tasks, list):
+        return [str(task).strip(" '\"") for task in tasks]
+    elif isinstance(tasks, str):
+        tasks = tasks.strip("[]").split(", ")
+        return [task.strip(" '\"") for task in tasks]
+    else:
+        raise ValueError(f"Unexpected input type: {type(tasks)}. Expected string or list.")
 
 def format_differences(differences):
     formatted_diffs = []
@@ -122,7 +126,7 @@ def save_report(report, folder1_name, folder2_name):
     print(f"Report saved to {report_path}")
 
 def print_ascii_art():
-    art = """
+    art = r"""
            ( (
             ) )
         __..---..__
